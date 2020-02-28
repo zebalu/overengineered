@@ -18,28 +18,27 @@ import spring.hello.world.util.DummyPrintStream;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { Application.class, HelloWorldPrinterServiceTest.TestConfiguration.class })
-@TestPropertySource(properties = {"greeter.name=Mundo", "greeter.word=Hola"})
+@TestPropertySource(properties = { "greeter.name=Mundo", "greeter.word=Hola" })
 public class HelloWorldPrinterServiceTest {
-    
+
     private static DummyPrintStream dummyStream = new DummyPrintStream(System.out);
-    
+
     @Autowired
     private HelloWorldPrinterService helloWorldPrinter;
-    
+
     @Test
     public void printIsRight() {
         helloWorldPrinter.print();
         assertEquals(dummyStream.getLastLog(), "Hola Mundo!");
     }
 
-    
     static class TestConfiguration {
-        
+
         @Bean
         @Primary
         public PrintStream target() {
             return dummyStream;
         }
-        
+
     }
 }

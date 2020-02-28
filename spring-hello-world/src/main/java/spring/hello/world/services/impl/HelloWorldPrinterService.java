@@ -11,16 +11,16 @@ public class HelloWorldPrinterService implements HelloWorldPrinter {
     private final Greeter greeter;
     private final Namer namer;
     private final PrintStream targetStream;
-    
+
     public HelloWorldPrinterService(Greeter greeter, Namer namer, PrintStream target) {
-        this.greeter=greeter;
-        this.namer=namer;
-        this.targetStream=target;
+        this.greeter = greeter;
+        this.namer = namer;
+        this.targetStream = target;
     }
-    
+
     @Override
     public void print() {
-        targetStream.println(greeter.getGreeterWord()+" "+namer.getName()+"!");
+        targetStream.println(greeter.getGreeterWord() + " " + namer.getName() + "!");
     }
 
 }

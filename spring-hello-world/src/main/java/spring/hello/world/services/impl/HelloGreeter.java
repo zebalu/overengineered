@@ -8,7 +8,7 @@ public class HelloGreeter implements Greeter {
 
     @Value("${greeter.word:Hello}")
     private String hello;
-    
+
     @Override
     public String getGreeterWord() {
         return hello;

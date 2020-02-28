@@ -8,7 +8,7 @@ public class WorldNamer implements Namer {
 
     @Value("${greeter.name:World}")
     private String name;
-    
+
     @Override
     public String getName() {
         return name;

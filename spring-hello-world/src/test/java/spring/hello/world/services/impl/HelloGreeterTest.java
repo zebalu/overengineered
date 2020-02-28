@@ -13,16 +13,15 @@ import spring.hello.world.Application;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = Application.class)
-@TestPropertySource(properties = {"greeter.word=Csakany"})
+@TestPropertySource(properties = { "greeter.word=Csakany" })
 public class HelloGreeterTest {
-    
+
     @Autowired
     private HelloGreeter greeter;
-    
+
     @Test
     public void wordIsDeterminedByProperty() {
         assertEquals("Csakany", greeter.getGreeterWord());
     }
-    
 
 }

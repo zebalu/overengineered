@@ -20,20 +20,20 @@ public class HelloWorldPrinterConfig {
     public Greeter greeter() {
         return new HelloGreeter();
     }
-    
+
     @Bean
     public Namer namer() {
         return new WorldNamer();
     }
-    
+
     @Bean
     public PrintStream target() {
         return System.out;
     }
-    
+
     @Bean
     public HelloWorldPrinter helloWorldPrinter(@Autowired PrintStream target) {
         return new HelloWorldPrinterService(greeter(), namer(), target);
     }
-    
+
 }

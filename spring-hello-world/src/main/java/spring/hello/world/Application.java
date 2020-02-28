@@ -14,7 +14,8 @@ public class Application {
 
     public static void main(String... args) {
         try (ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(Application.class)) {
-            context.getBean(HelloWorldPrinter.class).print();;
+            context.getBean(HelloWorldPrinter.class).print();
+            ;
         }
     }
 

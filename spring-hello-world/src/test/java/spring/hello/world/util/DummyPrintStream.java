@@ -48,7 +48,7 @@ public class DummyPrintStream extends PrintStream {
                 assertFalse(dps.wasUsed());
             }
         }
-        
+
         @Test
         public void lastMessageCanBeRequested() {
             try (DummyPrintStream dps = new DummyPrintStream(System.err)) {
@@ -57,7 +57,7 @@ public class DummyPrintStream extends PrintStream {
                 assertEquals("2", dps.getLastLog());
             }
         }
-        
+
         @Test(expected = ArrayIndexOutOfBoundsException.class)
         public void lastMessageCanNotBegetFromUnused() {
             try (DummyPrintStream dps = new DummyPrintStream(System.err)) {
