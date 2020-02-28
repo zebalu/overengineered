@@ -10,5 +10,5 @@ public class ExceptionHiderTest {
     public void originalExceptionIsThrown() {
         ExceptionHider.hiddenThrow(new IOException());
     }
-    
+
 }
