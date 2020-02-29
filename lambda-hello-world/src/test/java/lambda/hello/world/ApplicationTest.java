@@ -1,11 +1,16 @@
 package lambda.hello.world;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -54,9 +59,9 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testConcatanator() throws Exception {
-        assertEquals("A B!", Application.concatanator("A", "B"));
-    }
+        public void testConcatenator() throws Exception {
+            assertEquals("A B!", Application.concatenator("A", "B"));
+        }
 
     @Test
     public void testFill() throws Exception {
@@ -64,6 +69,16 @@ public class ApplicationTest {
         assertEquals(2, p.keySet().size());
         assertEquals("APPLE", p.getProperty("apple"));
         assertEquals("test", p.getProperty("test"));
+    }
+    
+    @Test
+    public void fillCanSurviveMissingresource() throws Exception {
+        try {
+            Application.fill(new Properties(), "./there_is_no_such_file_like_this.properties");
+        } catch(Throwable t) {
+            t.printStackTrace();
+            fail("An exception was thrown: "+t);
+        }
     }
 
     @Test
@@ -100,6 +115,38 @@ public class ApplicationTest {
     public void testSpringLikePropertyResolverList() throws Exception {
         List<Function<String, String>> list = Application.springLikePropertyResolverList(new Properties());
         assertEquals(3, list.size());
+    }
+    
+    @Test
+    public void tryCatchConsumeReturnsEmptyOnExpectedException() {
+        Optional<String> result = Application.tryCatchConsume(() -> {
+                throw new IllegalStateException();
+        }, (IllegalStateException ise) -> ise.printStackTrace());
+        assertFalse(result.isPresent());
+    }
+    
+    @Test
+    public void tryCatchConsumeReturnsValueIfNoException() {
+        Optional<String> result = Application.tryCatchConsume(() -> "It is here", (IllegalStateException ise) -> ise.printStackTrace());
+        assertTrue(result.isPresent());
+        assertEquals("It is here", result.get());
+    }
+    
+    @Test(expected = IOException.class)
+    public void tryCatchConsumeThrowsOnUnexpectedException() {
+        Application.tryCatchConsume(() -> {
+            throw new IOException();
+        }, (IllegalStateException ise) -> ise.printStackTrace());
+    }
+    
+    @Test
+    public void tryCatchConsumeForwardsException() {
+        List<IllegalStateException> caughtExceptions = new ArrayList<>();
+        Application.tryCatchConsume(() -> {
+            throw new IllegalStateException("This was thrown");
+        }, (IllegalStateException ise) -> caughtExceptions.add(ise));
+        assertEquals(1, caughtExceptions.size());
+        assertEquals("This was thrown", caughtExceptions.get(0).getMessage());
     }
 
     private String pathOfResource(String resource) {

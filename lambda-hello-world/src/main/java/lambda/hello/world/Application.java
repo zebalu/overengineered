@@ -2,11 +2,11 @@ package lambda.hello.world;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -21,7 +21,7 @@ public class Application {
     public static void main(String... args) {
         Properties props = fill(new Properties(), "./application.properties");
         greetPrinter(System.out::println,
-                biFunctionConverter(Application::concatanator,
+                biFunctionConverter(Application::concatenator,
                         triFunctionConverter(Application::propertyResolverChain, "greeter.word",
                                 springLikePropertyResolverList(props), "Hello"),
                         triFunctionConverter(Application::propertyResolverChain, "greeter.name",
@@ -41,19 +41,18 @@ public class Application {
         return () -> function.apply(a, b, c);
     }
 
-    static String concatanator(String greet, String greeted) {
+    static String concatenator(String greet, String greeted) {
         return greet + " " + greeted + "!";
     }
 
     static Properties fill(Properties props, String fileName) {
-        try (FileReader fr = new FileReader(fileName)) {
-            props.load(fr);
-        } catch (FileNotFoundException fnfe) {
-            Logger.getLogger(Application.class.toString()).info(fileName + " is missing");
-        } catch (IOException e) {
-            throw ExceptionHider.hiddenThrow(e);
-        }
-        return props;
+        return tryCatchConsume(() -> {
+            try (FileReader fr = new FileReader(fileName)) {
+                props.load(fr);
+                return props;
+            }
+        }, (FileNotFoundException fnfe) -> Logger.getLogger(Application.class.toString())
+                .info(()->fileName + " is missing")).orElse(props);
     }
 
     static String propertyResolverChain(String propertyKey, List<Function<String, String>> list, String defaultValue) {
@@ -66,9 +65,29 @@ public class Application {
                 props::getProperty);
     }
 
+    @SuppressWarnings("unchecked")
+    static <A, B extends Throwable> Optional<A> tryCatchConsume(ThrowingSupplier<A> supplier, Consumer<B> consumer) {
+        try {
+            return Optional.of(supplier.get());
+        } catch (Throwable b) {
+            try {
+                consumer.accept((B) b);
+            } catch (Exception e) {
+                throw ExceptionHider.hiddenThrow(b);
+            }
+            return Optional.empty();
+        }
+    }
+
     @FunctionalInterface
     static interface TriFunction<P1, P2, P3, R> {
         R apply(P1 p1, P2 p2, P3 p3);
+    }
+    
+    @FunctionalInterface
+    static interface ThrowingSupplier<T> {
+        
+        T get() throws Throwable;
     }
 
 }
