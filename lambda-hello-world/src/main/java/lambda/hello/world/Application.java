@@ -19,13 +19,13 @@ import lambda.hello.world.util.ExceptionHider;
 public class Application {
 
     public static void main(String... args) {
-        Properties props = fill(new Properties(), "./application.properties");
-        greetPrinter(System.out::println,
-                biFunctionConverter(Application::concatenator,
-                        triFunctionConverter(Application::propertyResolverChain, "greeter.word",
-                                springLikePropertyResolverList(props), "Hello"),
-                        triFunctionConverter(Application::propertyResolverChain, "greeter.name",
-                                springLikePropertyResolverList(props), "World")));
+        multyApplier(() -> fill(new Properties(), "./application.properties"),
+                props -> greetPrinter(System.out::println,
+                        biFunctionConverter(Application::concatenator,
+                                triFunctionConverter(Application::propertyResolverChain, "greeter.word",
+                                        springLikePropertyResolverList(props), "Hello"),
+                                triFunctionConverter(Application::propertyResolverChain, "greeter.name",
+                                        springLikePropertyResolverList(props), "World"))));
 
     }
 
@@ -77,6 +77,11 @@ public class Application {
             }
             return Optional.empty();
         }
+    }
+    
+    @SafeVarargs
+    static <A> void multyApplier(Supplier<A> b, Consumer<A>... cs) {
+        Arrays.stream(cs).forEach(c -> c.accept(b.get()));
     }
 
     @FunctionalInterface

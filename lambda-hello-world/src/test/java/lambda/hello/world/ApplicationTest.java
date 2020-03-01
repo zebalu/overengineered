@@ -148,6 +148,13 @@ public class ApplicationTest {
         assertEquals(1, caughtExceptions.size());
         assertEquals("This was thrown", caughtExceptions.get(0).getMessage());
     }
+    
+    @Test
+    public void allConsumerIsCalled() {
+        int[] accumulator = {0};
+        Application.multyApplier(()->1, i->accumulator[0]+=i, i->accumulator[0]+=i*2, i->accumulator[0]+=i*4);
+        assertEquals(7, accumulator[0]);
+    }
 
     private String pathOfResource(String resource) {
         try {

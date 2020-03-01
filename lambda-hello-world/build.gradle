@@ -12,6 +12,8 @@ plugins {
     id 'application'
 }
 
+targetCompatibility="1.8"
+
 repositories {
     // Use jcenter for resolving dependencies.
     // You can declare any Maven/Ivy/file repository here.
@@ -21,7 +23,7 @@ repositories {
 mainClassName='lambda.hello.world.Application'
 
 dependencies {
-    
+    testImplementation 'junit:junit:4.12'
 }
 
 applicationDistribution.from("src/main/resources/") {
