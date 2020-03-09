@@ -1,0 +1,64 @@
+plugins {
+    id 'java-library'
+    id 'application'
+}
+
+def RUN_TASKS='Run applications'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.2.5.RELEASE')
+    implementation platform('org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR3')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-ribbon'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-core'
+    
+    
+}
+
+application {
+    mainClassName = 'microservice.hello.world.common.starter.OnlyOneStarter'
+}
+
+task runApi(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'microservice.hello.world.common.starter.OnlyOneStarter'
+    args = ['microservice.hello.world.api.ApiApp']
+    group RUN_TASKS
+}
+
+task runNamer(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'microservice.hello.world.common.starter.OnlyOneStarter'
+    args = ['microservice.hello.world.namer.NamerApp']
+    group RUN_TASKS
+}
+
+task runGreeter(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'microservice.hello.world.common.starter.OnlyOneStarter'
+    args = ['microservice.hello.world.greeter.GreeterApp']
+    group RUN_TASKS
+}
+
+task runConcatenator(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'microservice.hello.world.common.starter.OnlyOneStarter'
+    args = ['microservice.hello.world.concatenator.ConcatenatorApp']
+    group RUN_TASKS
+}
+
+task runAllInOne(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'microservice.hello.world.common.starter.AllInOneStarter'
+    group RUN_TASKS
+}
